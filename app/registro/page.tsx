@@ -58,13 +58,12 @@ export default function RegistroPage() {
 
     // Verificar sesión periódicamente cada 60 segundos para mantener el estado actualizado
     const intervalId = setInterval(() => {
-      if (!loadingSession && colaboradorNombre) {
-        checkSession();
-      }
+      checkSession();
     }, 60000);
 
     // Limpiar el intervalo al desmontar el componente
     return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   const handleLogout = async () => {
@@ -217,7 +216,7 @@ export default function RegistroPage() {
               <p className="text-sm text-blue-800">
                 <strong>Instrucciones:</strong> Ingresa la cédula del empleado y el sistema
                 buscará su registro. Si existe, se actualizará automáticamente con la fecha
-                y hora actual, marcando su asistencia como "Asistió".
+                y hora actual, marcando su asistencia como &quot;Asistió&quot;.
               </p>
             </div>
           </div>
