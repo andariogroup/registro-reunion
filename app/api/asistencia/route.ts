@@ -45,12 +45,13 @@ export async function GET(request: NextRequest) {
 // POST: Actualizar asistencia
 export async function POST(request: NextRequest) {
   try {
+    // Obtener el nombre del colaborador de las cookies (debe estar autenticado)
     const colaboradorNombre = request.cookies.get('colaborador_nombre')?.value;
     const colaboradorCedula = request.cookies.get('colaborador_cedula')?.value;
 
     if (!colaboradorNombre || !colaboradorCedula) {
       return NextResponse.json(
-        { success: false, message: 'No hay sesión activa. Por favor, inicia sesión.' },
+        { success: false, message: 'No hay sesión activa. Por favor, inicia sesión con tu cédula de colaborador.' },
         { status: 401 }
       );
     }

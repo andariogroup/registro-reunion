@@ -1,13 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 export default function LoginPage() {
   const [cedula, setCedula] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
   const router = useRouter();
+
+  // Verificar si ya hay una sesión activa al cargar la página
+  useEffect(() => {
+    const checkExistingSession = async () => {
+      try {
+        const response = await fetch('/api/auth', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.colaborador) {
+            // Ya hay sesión activa, redirigir a registro
+            router.push('/registro');
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Error al verificar sesión:', error);
+      } finally {
+        setCheckingSession(false);
+      }
+    };
+
+    checkExistingSession();
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +82,18 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  // Mostrar loading mientras se verifica la sesión
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Verificando sesión...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
